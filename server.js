@@ -20,6 +20,7 @@ var cache = {
 
 io.on('connection', function(socket) {
   socket.on('new guest', function(data) {
+    socket.nickname = data.nickname;
     io.emit('new guest', {list: cache.nameList});
   });
   socket.on('from client', function(data) {
@@ -28,6 +29,15 @@ io.on('connection', function(socket) {
     if (cache.msgList.length >= 100) {
       cache.msgList.shift();
     }
+  });
+  socket.on('disconnect', function() {
+    for (var i = 0; i < cache.nameList.length; i++) {
+      if (cache.nameList[i] == socket.nickname) {
+        cache.nameList.splice(i, 1);
+        break;
+      }
+    }
+    io.emit('new guest', {list: cache.nameList});
   });
 });
 

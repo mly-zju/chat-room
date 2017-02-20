@@ -71,7 +71,7 @@ var Chat = React.createClass({
       if (!data.permit) {
         hashHistory.push('/login');
       } else {
-        socket.emit('new guest', {});
+        socket.emit('new guest', {nickname: data.nickname});
         self.setState({nickname: data.nickname});
       }
     })
