@@ -1,7 +1,7 @@
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var config = {
   devtool: 'eval-source-map',
-  entry: './src/index.js',
+  entry: ['whatwg-fetch', './src/index.js'],
   output: {
     path: __dirname + '/dist',
     filename: 'bundle.js',
@@ -20,7 +20,7 @@ var config = {
         test: /\.less$/,
         loader: ExtractTextPlugin.extract({
           fallback: 'style-loader',
-          use: ['css-loader', 'less-loader']
+          use: ['css-loader', 'less-loader', 'autoprefixer-loader']
         }),
         exclude: /node_modules/
       }, {

@@ -8,10 +8,10 @@ class Nav extends React.Component {
     super(props);
   }
   render() {
-    var {handleClick} = this.props;
+    var {handleClick, nickName} = this.props;
     return (
       <div className='nav'>
-        A chat room using react+ redux+ socket.io+ koa
+        <span>Welcome, {nickName}!</span>
         <button onClick={handleClick}>退出</button>
       </div>
     )

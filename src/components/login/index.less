@@ -1,6 +1,7 @@
 .nick-name {
   width: 300px;
   height: 100px;
+  padding: 10px;
   position: absolute;
   left: 0;
   right: 0;
@@ -10,24 +11,28 @@
   border: 1px solid gray;
   border-radius: 5px;
   text-align: center;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-content: space-around;
 }
 
 .nick-name h2 {
-  margin-top: 15px;
+  flex: 0 0 100%;
 }
 
 .nick-name input {
   outline: none;
   border: 1px solid gray;
-  height: 18px;
+  height: 20px;
+  flex: 0 0 50%;
+  padding: 0 5px;
 }
 
 .nick-name button {
   outline: none;
   border: 1px solid gray;
-  height: 20px;
+  height: 22px;
   background-color: white;
-  margin-left: 2px;
-  padding-left: 2px;
-  padding-right: 2px;
+  flex: 0 0 20%;
 }

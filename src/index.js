@@ -8,8 +8,7 @@ import LoginContainer from './container/login.js'
 import createSocketMiddleware from './redux_middleware'
 import io from 'socket.io-client'
 import reducers from './reducer'
-
-require('./index.less');
+import './index.less'
 
 var socket = io();
 var socketMiddleware = createSocketMiddleware(socket);

@@ -1,26 +1,17 @@
-* {
-  margin: 0;
-  padding: 0;
-}
-body{
-  height: 100%;
-  background-image: url(../resource/background.jpeg);
-  background-repeat: no-repeat;
-  background-size: cover;
-}
 .chat-wrap {
-  width: 610px;
-  padding: 5px;
-  margin: 50px auto;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
-.bg{
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: -1;
-  background: inherit;
-  filter: blur(10px);
+.message-wrap {
+  display: flex;
+  flex: 1;
+}
+
+.typein-wrap {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }

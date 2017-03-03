@@ -4,6 +4,8 @@ import MsgShow from '../msgshow/index.js'
 import NameList from '../namelist/index.js'
 import Nav from '../nav/index.js'
 
+require('./index.less');
+
 class ChatAll extends React.Component {
   constructor(props) {
     super(props);
@@ -18,10 +20,14 @@ class ChatAll extends React.Component {
     } else {
       return (
         <div className='chat-wrap'>
-          <Nav handleClick={handleClick}/>
-          <NameList nameList={nameList}/>
-          <MsgShow msgList={msgList}/>
-          <TypeIn handleSubmit={handleSubmit} nickName={nickName}/>
+          <Nav handleClick={handleClick} nickName={nickName}/>
+          <div className='message-wrap'>
+            <NameList nameList={nameList}/>
+            <div className='typein-wrap'>
+              <MsgShow msgList={msgList}/>
+              <TypeIn handleSubmit={handleSubmit} nickName={nickName}/>
+            </div>
+          </div>
         </div>
       )
     }
