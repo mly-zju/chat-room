@@ -1,4 +1,4 @@
-##  This is a chat room application implemented using react+socket.io+koa.
+##  This is a chat room application implemented using react+redux+socket.io+koa.
 
 ![](./resource/preview.png)
 

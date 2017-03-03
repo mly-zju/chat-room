@@ -12,14 +12,17 @@ class TypeIn extends React.Component {
     this.messageType = this.messageType.bind(this);
   }
   messageType(e) {
-    this.setState({text: e.target.value});
-  }
-  messageSend() {
-    this.props.eventHandler.publish('typeIn', {
-      nickname: this.props.nickname,
-      msg: this.state.text
+    this.setState({
+      text: e.target.value
     });
-    this.setState({text: ""});
+  }
+  messageSend(e) {
+    this.setState({
+      text: ''
+    });
+    var value = this.refs.myInput.value;
+    var nickName = this.props.nickName;
+    this.props.handleSubmit(value, nickName);
   }
   render() {
     return (
