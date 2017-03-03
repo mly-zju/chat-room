@@ -27,6 +27,7 @@ function msg_reducer(state = [], action) {
       newState = [...state, action.msg];
       return newState;
     case 'NICKNAME_FORGET':
+      return [];
     default:
       return state;
   }

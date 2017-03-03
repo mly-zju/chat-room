@@ -16,13 +16,12 @@ var server = require('http').Server(app.callback());
 var io = require('socket.io')(server);
 
 var cache = {
-  nameList: [],
+  nameList: new Set([]),
   msgList: []
 };
 
 io.on('connection', function(socket) {
   socket.on('msg from client', function(data) {
-    console.log(data);
     socket.broadcast.emit('msg from server', data);
     cache.msgList.push(data);
     if (cache.msgList.length >= 100) {
@@ -30,36 +29,22 @@ io.on('connection', function(socket) {
     }
   });
   socket.on('disconnect', function() {
-    for (var i = 0; i < cache.nameList.length; i++) {
-      if (cache.nameList[i] == socket.nickname) {
-        cache.nameList.splice(i, 1);
-        break;
-      }
-    }
+    cache.nameList.delete(socket.nickname);
     io.emit('guest update',
-      cache.nameList
+      [...cache.nameList]
     );
   });
-  socket.on('guest come', function() {
-    for (var i = 0; i < cache.nameList.length; i++) {
-      if (cache.nameList[i] == socket.nickname) {
-        cache.nameList.splice(i, 1);
-        break;
-      }
-    }
+  socket.on('guest come', function(data) {
+    cache.nameList.add(data);
+    socket.nickname = data;
     io.emit('guest update',
-      cache.nameList
+      [...cache.nameList]
     );
   });
-  socket.on('guest leave', function() {
-    for (var i = 0; i < cache.nameList.length; i++) {
-      if (cache.nameList[i] == socket.nickname) {
-        cache.nameList.splice(i, 1);
-        break;
-      }
-    }
+  socket.on('guest leave', function(data) {
+    cache.nameList.delete(data);
     io.emit('guest update',
-      cache.nameList
+      [...cache.nameList]
     );
   });
 });
@@ -81,16 +66,6 @@ app.use(route.get('/api/auth', function*() {
     });
   } else {
     var nick = this.cookies.get('nickname');
-    var flag = 1;
-    for (var i = 0; i < cache.nameList.length; i++) {
-      if (cache.nameList[i] == nick) {
-        flag = 0;
-        break;
-      }
-    }
-    if (flag) {
-      cache.nameList.push(nick);
-    }
     this.body = JSON.stringify({
       permit: true,
       nickname: nick
@@ -101,19 +76,19 @@ app.use(route.get('/api/auth', function*() {
 app.use(route.post('/api/nickname', function*() {
   var body = yield parse(this, {});
   this.cookies.set('nickname', body);
-  cache.nameList.push(body);
+  // cache.nameList.add(body);
   this.body = '';
 }));
 
 app.use(route.post('/api/logout', function*() {
   var nick = this.cookies.get('nickname');
   this.cookies.set('nickname', undefined);
-  for (var i = 0; i < cache.nameList.length; i++) {
-    if (cache.nameList[i] == nick) {
-      cache.nameList.splice(i, 1);
-      break;
-    }
-  }
+  // for (var i = 0; i < cache.nameList.length; i++) {
+  //   if (cache.nameList[i] == nick) {
+  //     cache.nameList.splice(i, 1);
+  //     break;
+  //   }
+  // }
   this.body = '';
 }));
 
