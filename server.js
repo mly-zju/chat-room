@@ -6,7 +6,8 @@ var webpack = require('webpack');
 var webpackDev = require('koa-webpack-dev-middleware');
 var webpackConf = require('./webpack.config.js');
 var compiler = webpack(webpackConf);
-var app = koa();
+var serve = require('koa-static');
+var app = new koa();
 
 var render = views('./src', {
   ext: 'ejs'
@@ -49,11 +50,13 @@ io.on('connection', function(socket) {
   });
 });
 
-app.use(webpackDev(compiler, {
-  contentBase: webpackConf.output.path,
-  publicPath: webpackConf.output.publicPath,
-  hot: false
-}));
+// app.use(webpackDev(compiler, {
+//   contentBase: webpackConf.output.path,
+//   publicPath: webpackConf.output.publicPath,
+//   hot: false
+// }));
+
+app.use(serve('./dist'));
 
 app.use(route.get('/', function*() {
   this.body = yield render('index', {});

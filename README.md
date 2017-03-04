@@ -1,6 +1,6 @@
 ##  This is a chat room application implemented using react+redux+socket.io+koa.
 
-![](./resource/preview.png)
+![](../dist/resource/preview.png)
 
 ###  how to use
   * npm install
