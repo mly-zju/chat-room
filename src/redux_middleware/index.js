@@ -12,6 +12,9 @@ function createSocketMiddleware(socket) {
       socket.on('msg from server', function(data) {
         next(message_update(data));
       });
+      setInterval(function() {
+        socket.emit('heart beat');
+      }, 10000);
     }
     if (action.type == 'MSG_UPDATE') {
       socket.emit('msg from client', action.msg);
