@@ -124,9 +124,10 @@ app.use(route.post('/api/nickname', function*() {
 
 app.use(route.post('/api/logout', function*() {
   var nick = this.cookies.get('nickname');
+  nick = new Buffer(nick, 'base64').toString();
   this.cookies.set('nickname', undefined);
-  cache.nameListActive.delete(data);
-  delete cache.nameList[data];
+  cache.nameListActive.delete(nick);
+  delete cache.nameList[nick];
   this.body = '';
 }));
 
