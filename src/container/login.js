@@ -33,11 +33,13 @@ function mapDispatchToProps(dispatch, ownProps) {
       }).then(function(res) {
         return res.json();
       }).then(function(data) {
-        if (data.legal) {
+        if (data.legal == 'yes') {
           dispatch(nickname_get(nickname));
           hashHistory.push('/');
-        } else {
-          alert('昵称已被占用，请重新选择昵称！');
+        } else if (data.legal == 'repeat') {
+          alert('昵称已被占用,请重新选择昵称！');
+        } else if (data.legal == 'self login') {
+          alert('您已进入聊天室,请勿重复进入');
         }
       })
     }

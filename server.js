@@ -33,10 +33,14 @@ var sessionFresh = setInterval(function() {
 
 io.on('connection', function(socket) {
   socket.on('msg from client', function(data) {
-    socket.broadcast.emit('msg from server', data);
-    cache.msgList.push(data);
-    if (cache.msgList.length >= 100) {
-      cache.msgList.shift();
+    if (!cache.nameListActive.has(data.nickName)) {
+      socket.emit('self logout');
+    } else {
+      socket.broadcast.emit('msg from server', data);
+      cache.msgList.push(data);
+      if (cache.msgList.length >= 100) {
+        cache.msgList.shift();
+      }
     }
   });
   socket.on('disconnect', function() {
@@ -96,19 +100,25 @@ app.use(route.get('/api/auth', function*() {
 }));
 
 app.use(route.post('/api/nickname', function*() {
-  var rawBody = yield parse(this, {});
-  if (!(rawBody in cache.nameList)) {
-    var body = new Buffer(rawBody).toString('base64');
-    this.cookies.set('nickname', body, {
-      maxAge: 7200000
-    });
+  if (this.cookies.get('nickname') != undefined) {
     this.body = JSON.stringify({
-      legal: true
-    });
+      legal: 'self login'
+    })
   } else {
-    this.body = JSON.stringify({
-      legal: false
-    });
+    var rawBody = yield parse(this, {});
+    if (!(rawBody in cache.nameList)) {
+      var body = new Buffer(rawBody).toString('base64');
+      this.cookies.set('nickname', body, {
+        maxAge: 7200000
+      });
+      this.body = JSON.stringify({
+        legal: 'yes'
+      });
+    } else {
+      this.body = JSON.stringify({
+        legal: 'repeat'
+      });
+    }
   }
 }));
 
