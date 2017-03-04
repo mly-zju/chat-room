@@ -124,10 +124,12 @@ app.use(route.post('/api/nickname', function*() {
 
 app.use(route.post('/api/logout', function*() {
   var nick = this.cookies.get('nickname');
-  nick = new Buffer(nick, 'base64').toString();
   this.cookies.set('nickname', undefined);
-  cache.nameListActive.delete(nick);
-  delete cache.nameList[nick];
+  if (nick != undefined) {
+    nick = new Buffer(nick, 'base64').toString();
+    cache.nameListActive.delete(nick);
+    delete cache.nameList[nick];
+  }
   this.body = '';
 }));
 
