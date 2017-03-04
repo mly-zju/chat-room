@@ -17,9 +17,19 @@ var server = require('http').Server(app.callback());
 var io = require('socket.io')(server);
 
 var cache = {
-  nameList: new Set([]),
+  nameList: {},
+  nameListActive: new Set([]),
   msgList: []
 };
+
+var sessionFresh = setInterval(function() {
+  for (var key in cache.nameList) {
+    cache.nameList[key] -= 10000;
+    if (cache.nameList[key] <= 0) {
+      delete cache.nameList[key];
+    }
+  }
+}, 10000);
 
 io.on('connection', function(socket) {
   socket.on('msg from client', function(data) {
@@ -30,23 +40,31 @@ io.on('connection', function(socket) {
     }
   });
   socket.on('disconnect', function() {
-    cache.nameList.delete(socket.nickname);
+    cache.nameListActive.delete(socket.nickname);
     io.emit('guest update',
-      [...cache.nameList]
+      [...cache.nameListActive]
     );
   });
   socket.on('guest come', function(data) {
-    cache.nameList.add(data);
+    cache.nameListActive.add(data);
+    cache.nameList[data] = 7200000;
     socket.nickname = data;
     io.emit('guest update',
-      [...cache.nameList]
+      [...cache.nameListActive]
     );
   });
   socket.on('guest leave', function(data) {
-    cache.nameList.delete(data);
+    cache.nameListActive.delete(data);
+    delete cache.nameList[data];
+    socket.nickname = undefined;
     io.emit('guest update',
-      [...cache.nameList]
+      [...cache.nameListActive]
     );
+  });
+  socket.on('heart beat', function() {
+    if (socket.nickname != undefined) {
+      cache.nameList[socket.nickname] = 7200000;
+    }
   });
 });
 
@@ -69,6 +87,7 @@ app.use(route.get('/api/auth', function*() {
     });
   } else {
     var nick = this.cookies.get('nickname');
+    nick = new Buffer(nick, 'base64').toString();
     this.body = JSON.stringify({
       permit: true,
       nickname: nick
@@ -77,9 +96,12 @@ app.use(route.get('/api/auth', function*() {
 }));
 
 app.use(route.post('/api/nickname', function*() {
-  var body = yield parse(this, {});
-  if (!cache.nameList.has(body)) {
-    this.cookies.set('nickname', body);
+  var rawBody = yield parse(this, {});
+  if (!(rawBody in cache.nameList)) {
+    var body = new Buffer(rawBody).toString('base64');
+    this.cookies.set('nickname', body, {
+      maxAge: 7200000
+    });
     this.body = JSON.stringify({
       legal: true
     });
