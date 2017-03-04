@@ -10,7 +10,6 @@ function createSocketMiddleware(socket) {
         next(guest_update(data));
       });
       socket.on('msg from server', function(data) {
-        console.log('msg from server');
         next(message_update(data));
       });
     }

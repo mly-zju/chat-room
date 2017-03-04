@@ -31,11 +31,15 @@ function mapDispatchToProps(dispatch, ownProps) {
         body: nickname,
         credentials: 'include'
       }).then(function(res) {
-        if (res.ok) {
+        return res.json();
+      }).then(function(data) {
+        if (data.legal) {
           dispatch(nickname_get(nickname));
           hashHistory.push('/');
+        } else {
+          alert('昵称已被占用，请重新选择昵称！');
         }
-      });
+      })
     }
   }
 }

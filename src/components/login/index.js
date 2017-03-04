@@ -18,8 +18,7 @@ class Login extends React.Component {
       return (
         <div className='nick-name'>
         <h2>起一个昵称吧！</h2>
-        <input ref='nick'/>
-        <button onClick={handleClick}>确定</button>
+        <input ref='nick'/><button onClick={handleClick}>确定</button>
       </div>
       )
     }

@@ -75,20 +75,21 @@ app.use(route.get('/api/auth', function*() {
 
 app.use(route.post('/api/nickname', function*() {
   var body = yield parse(this, {});
-  this.cookies.set('nickname', body);
-  // cache.nameList.add(body);
-  this.body = '';
+  if (!cache.nameList.has(body)) {
+    this.cookies.set('nickname', body);
+    this.body = JSON.stringify({
+      legal: true
+    });
+  } else {
+    this.body = JSON.stringify({
+      legal: false
+    });
+  }
 }));
 
 app.use(route.post('/api/logout', function*() {
   var nick = this.cookies.get('nickname');
   this.cookies.set('nickname', undefined);
-  // for (var i = 0; i < cache.nameList.length; i++) {
-  //   if (cache.nameList[i] == nick) {
-  //     cache.nameList.splice(i, 1);
-  //     break;
-  //   }
-  // }
   this.body = '';
 }));
 
