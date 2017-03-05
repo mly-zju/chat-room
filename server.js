@@ -133,7 +133,7 @@ app.use(route.post('/api/logout', function*() {
   this.body = '';
 }));
 
-server.listen(process.env.PORT || 5000, function() {
+server.listen(process.env.PORT || 3000, function() {
   console.log('listening');
 });
 
