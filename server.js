@@ -72,13 +72,13 @@ io.on('connection', function(socket) {
   });
 });
 
-// app.use(webpackDev(compiler, {
-//   contentBase: webpackConf.output.path,
-//   publicPath: webpackConf.output.publicPath,
-//   hot: false
-// }));
+app.use(webpackDev(compiler, {
+  contentBase: webpackConf.output.path,
+  publicPath: webpackConf.output.publicPath,
+  hot: false
+}));
 
-app.use(serve('./dist'));
+// app.use(serve('./dist'));
 
 app.use(route.get('/', function*() {
   this.body = yield render('index', {});
